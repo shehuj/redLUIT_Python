@@ -1,4 +1,4 @@
-from employee import Employee
+from employee import Employee, SalaryEmployee, HourlyEmployee, CommissionEmployee
 
 class Company:
     def __init__(self):
@@ -8,12 +8,9 @@ class Company:
         self.employees.append(new_employee)
 
     def display_employees(self):
-        print("Current employees in the company:")
+        print("Current employees in the company: \n")
         for emp in self.employees:
             print(emp.fname, emp.lname)
-            print("------------------------")
-            print("Weekly Paycheck: $", emp.calculate_paycheck())
-            print("------------------------")
 
 
     def pay_employees(self):
@@ -27,19 +24,19 @@ class Company:
 def main():
     my_company = Company()
     
-    employee1 = Employee("Sarah", "Hess", 50000)
-    employee2 = Employee("Lee", "Smith", 25000)
-    employee3 = Employee("Bob", "Brown", 60000)
-    employee4 = Employee("Jane", "Smith", 60000)
+    employee1 = SalaryEmployee("Sarah", "Hess", 50000)
+    employee2 = HourlyEmployee("Lee", "Smith", 25, 50)
+    employee3 = CommissionEmployee("Bob", "Brown", 30000, 5, 200)
+#    employee4 = SalaryEmployee("Jane", "Smith", 60000)
     
     my_company.add_employee(employee1)
     my_company.add_employee(employee2)
     my_company.add_employee(employee3)
-    my_company.add_employee(employee4)
+ #   my_company.add_employee(employee4)
 
     print("Company Employees and their Weekly Paychecks:")
     
     my_company.display_employees()
     my_company.pay_employees()
-    
+
 main()
