@@ -10,7 +10,7 @@ import sys  # built-in: access Python runtime details (e.g., executable, argv)
 import random  # built-in: generate random numbers
 import matplotlib.pyplot as plt  # external: create plots and visualizations
 import pyfiglet  # external & obscure: generate ASCII art text
-import hello_world  # custom: a user-defined module (must exist in your project)
+import redLUIT_Python.ec2randomName_foundational as ec2randomName_foundational  # custom: a user-defined module (must exist in your project)
 
 # Show some OS info
 print(
@@ -42,4 +42,4 @@ ascii_banner = pyfiglet.figlet_format(
 print(ascii_banner)  # print the ASCII art banner
 
 # Use custom module
-hello_world.say_hello()  # call a function from your custom hello_world module
+ec2randomName_foundational.say_hello()  # call a function from your custom hello_world module
