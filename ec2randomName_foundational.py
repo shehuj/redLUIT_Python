@@ -13,12 +13,12 @@ names = input("For what department is this instance: \n")
 print("Department: ", names)
 
 
-# generate instance names, and set limit to not more than 5 at a time
+# Generate instance names
 rand_num = random.randint(1000, 9999)
 rand_letter = ''.join(random.choices(string.ascii_lowercase, k=4))
 instance_name = f"redLUIT-{names}{rand_num}{rand_letter}"
 
-# Loop to generate instance names
+# Generate instance names with some limitations to amount of names to be generated.
 for i in range(number_of_instances):
     rand_num = random.randint(1000, 9999)
     rand_letter = ''.join(random.choices(string.ascii_lowercase, k=4))
