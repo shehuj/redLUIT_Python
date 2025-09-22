@@ -1,8 +1,0 @@
-matplotlib
-pytest
-python-matplotlib
-numpy
-pandas
-scikit-learn
-flask
-requests
