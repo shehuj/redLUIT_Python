@@ -9,7 +9,15 @@ print("++++++++++++++++++++++++++++++++++++ \n")
 
 # define the departments
 department_names = ('Accounting', 'FinOps', 'Marketing', 'IT')
-names = input("For what department is this instance: \n")
+names = input("For what department is this instance: \n").upper()
+# set an case sensitive input for department names
+if names not in department_names:
+    print("Invalid department. Please choose from the following:")
+    for dept in department_names:
+        print(dept)
+    exit()
+else:
+    print("Valid department.")
 print("Department: ", names)
 
 
@@ -27,4 +35,8 @@ for i in range(number_of_instances):
     if number_of_instances > 5:
         print("You can only generate up to 5 instance names at a time. Please try again with a lesser number.")
         break
+    else:
+        print(f"Generating {number_of_instances} instance names. \n")
+        print("++++++++++++++++++++++++++++++++++++ \n")
+        print(f"Instance name {instance_name} has been created for the {names} department .")
 print("==================================================")
