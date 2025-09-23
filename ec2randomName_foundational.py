@@ -33,7 +33,8 @@ for i in range(number_of_instances):
 
     if number_of_instances > 5:
         print("You can only generate up to 5 instance names at a time. Please try again with a lesser number.")
-        break
+        number_of_instances = 6
+        exit()
     else:
         print(f"Instance name:", instance_name, names, "department")
 print("==================================================")
