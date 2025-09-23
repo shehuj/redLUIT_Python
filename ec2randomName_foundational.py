@@ -11,7 +11,7 @@ print("++++++++++++++++++++++++++ \n")
 department_names = ('Accounting', 'FinOps', 'Marketing')
 names = input("For what department is this instance: \n")
 
-# set an case sensitive input for department names
+# set a case sensitive input for department names
 if names not in department_names:
     print("No Match (case-sensitive).")
     print("Invalid department. Please choose from the following:")
