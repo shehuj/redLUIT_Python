@@ -1,5 +1,6 @@
 import random
 import string
+import sys
 
 # define the number of instance names to generate
 num_instace_names = int(input("Enter number of instances to generate names for: \n"))
@@ -12,9 +13,19 @@ departments = ['Accounting', 'FinOps', 'Marketing']
 if num_instace_names > 5:
     print("You can only generate up to 5 instance names at a time. Please try again with a lesser number.")
     num_instace_names = 6
-else:
-    print(f"Generating {num_instace_names} instance names. \n")
-    print("++++++++++++++++++++++++++++++++++++ \n")
+
+# Validate input is between 0 and 5
+try:
+    num = int(num_instace_names)
+except ValueError:
+    print("Error: you must enter a valid integer.")
+    sys.exit(1)
+
+if num < 0 or num > 5:
+    print("Error: number must be between 0 and 5.")
+    sys.exit(1)
+
+print(f"You entered {num_instace_names}, which is valid.")
 
 for i in range(num_instace_names):
     dept = input("For what department is this instance: \n")
@@ -32,5 +43,4 @@ for i in range(num_instace_names):
             print(dept)
         break
     else:
-        print(f"Instance name {instance_name} has been created for the {dept} department.")
         print("========================================= \n")
