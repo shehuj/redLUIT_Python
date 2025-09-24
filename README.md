@@ -49,8 +49,7 @@ The workflow includes a mandatory file validation step that ensures all required
 
 The following files must be present in your repository:
 - `package.json` - Project configuration and dependencies
-- `src/index.js` - Main application entry point
-- `deploy/config.yml` - Deployment configuration
+- `.gitignore` - File exclusion patterns
 - `README.md` - Project documentation
 
 ### Running File Presence Check Manually
@@ -79,7 +78,7 @@ Create a local script to check files:
 #!/bin/bash
 # check-files.sh
 
-required_files=("package.json" "src/index.js" "deploy/config.yml" "README.md")
+required_files=(".gitignore" "README.md")
 missing_files=()
 
 echo "Checking for required files..."
