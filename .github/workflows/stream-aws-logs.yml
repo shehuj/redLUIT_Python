@@ -1,0 +1,49 @@
+name: Stream AWS Logs (main only)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  stream-logs:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Stream AWS Logs
+      env:
+        AWS_REGION: ${{ secrets.AWS_REGION }}
+      run: |
+        # Determine log group based on branch (only main here)
+        if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
+          LOG_GROUP="${{ secrets.PROD }}"
+          ENV="production"
+        else
+          # Fallback just in case (shouldn’t happen)
+          LOG_GROUP="${{ secrets.BETA }}"
+          ENV="beta"
+        fi
+
+        echo "Streaming logs from environment: $ENV"
+        echo "Log Group: $LOG_GROUP"
+
+        if [ -z "$LOG_GROUP" ]; then
+          echo "ERROR: LOG_GROUP is not set. Aborting."
+          exit 1
+        fi
+
+        # Use timeout so the runner doesn't hang indefinitely
+        timeout 5m aws logs tail "$LOG_GROUP" --since 1h --follow
