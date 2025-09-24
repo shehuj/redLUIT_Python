@@ -1,4 +1,4 @@
-name: Stream AWS Logs (main only)
+name: Stream AWS Logs
 
 on:
   push:
