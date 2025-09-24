@@ -1,49 +1,51 @@
-name: Stream AWS Logs
+name: AWS Logging
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
-  stream-logs:
+  log_to_cloudwatch:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Set up AWS CLI
+        run: |
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v2
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION }}
+      - name: Configure AWS credentials
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set region ${{ secrets.AWS_REGION }}
 
-    - name: Stream AWS Logs
-      env:
-        AWS_REGION: ${{ secrets.AWS_REGION }}
-      run: |
-        # Determine log group based on branch (only main here)
-        if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
-          LOG_GROUP="${{ secrets.PROD }}"
-          ENV="production"
-        else
-          # Fallback just in case (shouldn’t happen)
-          LOG_GROUP="${{ secrets.BETA }}"
-          ENV="beta"
-        fi
+      - name: Create log stream and put log event
+        run: |
+          LOG_STREAM_NAME=$(date -u +"%Y-%m-%dT%H-%M-%SZ")
+          LOG_GROUP_NAME="${{ secrets.PROD_LOG_GROUP }}"
+          COMMIT_SHA="${GITHUB_SHA}"
+          GITHUB_ACTOR="${GITHUB_ACTOR}"
+          WORKFLOW_NAME="${GITHUB_WORKFLOW}"
+          TIMESTAMP=$(date +%s%3N)
 
-        echo "Streaming logs from environment: $ENV"
-        echo "Log Group: $LOG_GROUP"
+          # Create log stream
+          aws logs create-log-stream --log-group-name "$LOG_GROUP_NAME" --log-stream-name "$LOG_STREAM_NAME"
 
-        if [ -z "$LOG_GROUP" ]; then
-          print("ERROR: LOG_GROUP is not set. Aborting.")
-          exit 1
-        fi
+          # Prepare log event
+          LOG_EVENT_JSON=$(jq -n \
+            --arg workflow "$WORKFLOW_NAME" \
+            --arg sha "$COMMIT_SHA" \
+            --arg actor "$GITHUB_ACTOR" \
+            --arg timestamp "$TIMESTAMP" \
+            '{
+              message: "Workflow: \($workflow), Commit: \($sha), Actor: \($actor), Timestamp: \($timestamp)",
+              timestamp: ($timestamp | tonumber)
+            }')
 
-        # Use timeout so the runner doesn't hang indefinitely
-        timeout 5m aws logs tail "$LOG_GROUP" --since 1h --follow
+          # Put log event
+          aws logs put-log-events \
+            --log-group-name "$LOG_GROUP_NAME" \
+            --log-stream-name "$LOG_STREAM_NAME" \
+            --log-events "$LOG_EVENT_JSON"
