@@ -19,7 +19,7 @@ jobs:
       - name: Create log stream and put log event
         run: |
           LOG_STREAM_NAME=$(date -u +"%Y-%m-%dT%H-%M-%SZ")
-          LOG_GROUP_NAME="${{ secrets.PROD_LOG_GROUP }}"
+          LOG_GROUP_NAME="${{ secrets.BETA }}"
           COMMIT_SHA="${GITHUB_SHA}"
           GITHUB_ACTOR="${GITHUB_ACTOR}"
           WORKFLOW_NAME="${GITHUB_WORKFLOW}"
