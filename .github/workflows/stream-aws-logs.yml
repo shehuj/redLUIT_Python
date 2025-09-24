@@ -41,7 +41,7 @@ jobs:
         echo "Log Group: $LOG_GROUP"
 
         if [ -z "$LOG_GROUP" ]; then
-          echo "ERROR: LOG_GROUP is not set. Aborting."
+          print("ERROR: LOG_GROUP is not set. Aborting.")
           exit 1
         fi
 
